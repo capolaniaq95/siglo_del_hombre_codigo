@@ -1,0 +1,20 @@
+.full-height {
+	height: 100vh;
+}
+.image-container {
+	background: url('./images/Logotipo librería independiente dibujo morado (1).png') no-repeat center center;
+	background-size: cover;
+	height: 100%;
+}
+.form-container {
+	background: rgba(255, 255, 255, 0.8);
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.left-half {
+	width: 50%;
+}
+.right-half {
+	width: 50%;
+}
