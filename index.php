@@ -6,7 +6,7 @@ use PHPMailer\PHPMailer\SMTP;
 
 
 require "conexion.php";
-require __DIR__ . '/vendor/autoload.php';
+#require __DIR__ . '/vendor/autoload.php';
 
 /*
 $mail = new PHPMailer(true);

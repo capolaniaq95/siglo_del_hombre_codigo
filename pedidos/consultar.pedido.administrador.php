@@ -53,7 +53,15 @@
                             $id_devolucion = $result->fetch_assoc();
                             $id_devolucion = $id_devolucion['id_devolucion'];
                             echo '
-                            <a href="../devolucion/consultar.devolucion.php?id_devolucion=' . urlencode($id_devolucion) . '" class="btn btn-danger">Devolucion</a>';
+                            <div class="img-container d-flex flex-row-reverse">
+                            <a href="../devolucion/consultar.devolucion.php?id_devolucion=' . urlencode($id_devolucion) . '">
+                                <div class="img-container px-1" style="width:70px;height:60px;">
+                                    <img class="img-fluid" src="/images/devolucion.jpg" alt="devolucion">
+                                </div>
+                            </a>';
+                        }else{
+                            echo '
+                            <div class="img-container">';
                         }
 
                         $referencia = "Pedido" . $id_pedido;
@@ -62,11 +70,16 @@
                         $result = $mysqli->query($sql);
     
                         $id_movimiento = $result->fetch_assoc();
-                        
+
                         $id_movimiento = $id_movimiento['id_movimiento'];
     
                         echo '
-                        <a href="../inventario/consultar.movimiento.php?id_movimiento=' . urlencode($id_movimiento) . '" class="btn btn-success">Entrada</a>';
+                        <a href="../inventario/consultar.movimiento.php?id_movimiento=' . urlencode($id_movimiento) . '">
+                            <div class="img-container px-1" style="width:70px;height:60px;">
+                                <img class="img-fluid" src="/images/entrada.png" alt="Movimiento">
+                            </div>
+                        </a>
+                        </div>';
                     }
                     ?>
                 </div>
