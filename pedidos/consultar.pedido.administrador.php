@@ -56,7 +56,7 @@
                             <div class="img-container d-flex flex-row-reverse">
                             <a href="../devolucion/consultar.devolucion.php?id_devolucion=' . urlencode($id_devolucion) . '">
                                 <div class="img-container px-1" style="width:70px;height:60px;">
-                                    <img class="img-fluid" src="/images/devolucion.jpg" alt="devolucion">
+                                    <img class="img-fluid" src="/images/devolucion.png" alt="devolucion">
                                 </div>
                             </a>';
                         }else{
@@ -162,7 +162,7 @@
                         </div>
 
                         <!-- <button type="submit" class="btn btn-success">Guardar Pedido</button> -->
-                        <a href="pedido.php" class="btn btn-secondary">Atras</a>
+                        <a href="pedido.php" class="btn btn-secondary mb-3">Atras</a>
                     </form>
                 <?php
                 }

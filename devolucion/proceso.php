@@ -243,8 +243,10 @@
                         if ($next_page > $pages){
                             $next_page = $pages;
                         }
-                    }else {
+                    }else if ($pages > 1) {
                         $next_page = 2;
+                    }else{
+                        $next_page = 1;
                     }
                     echo '<li class="page-item">
                         <a class="page-link" href="proceso.php?page=' . urlencode($next_page) . '">Siguiente</a>
