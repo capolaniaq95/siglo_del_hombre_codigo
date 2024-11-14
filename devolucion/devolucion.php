@@ -80,7 +80,6 @@
                         <form class="form-inline my-2 my-lg-0" method="POST" action="devolucion.php">
                                 <select class="form-control mr-1" id="filtro" name="filtro">
                                     <option value="id_devolucion">ID</option>
-                                    <option value="usuario">Total</option>
                                     <option value="referencia">Referencia</option>
                                     <option value="estado">Estado</option>
                                     <option value="motivo">Motivo</option>

@@ -6,12 +6,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito de compras</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        .dropdown-menu-custom {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-menu-custom a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-menu-custom a:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .page-item a:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .nav-item:hover .dropdown-menu-custom {
+            display: block;
+        }
+        
+
+
+        .table td, .table th {
+            white-space: nowrap; 
+        }
+
+        .table-container {
+            width: 1000px;
+        }
+
+        #filtro a:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
     <div class="d-flex flex-column min-vh-100">
     <div class="d-flex flex-column min-vh-100">
-	<header>
+    <header>
             <nav class="navbar navbar-expand-lg navbar-primary bg-info">
                 <div class="container-fluid">
                     <!-- Alinea el título a la izquierda -->
@@ -25,11 +71,22 @@
                             <li class="nav-item">
                                 <a class="nav-link text-white" href="Metodo.pago.php">Metodo de Pago</a>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-white dropdown-toggle" href="../devolucion/devolucion.php" id="navbarDropdown" role="button">
+                                    Devoluciones
+                                </a>
+                                <div class="dropdown-menu-custom" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="../devolucion/proceso.php">Proceso</a>
+                                    <a class="dropdown-item" href="../devolucion/aceptada.php">Aceptada</a>
+                                    <a class="dropdown-item" href="../devolucion/rechazada.php">Rechazada</a>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </nav>
         </header>
+
         <main class="flex-fill">
             <div class="container mt-4">
             <div class="d-flex align-items-center mb-1">
