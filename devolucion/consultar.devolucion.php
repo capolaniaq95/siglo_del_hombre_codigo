@@ -110,22 +110,31 @@
                                 <div class="img-container">';
                             }
 
-                            $referencia = "Pedido" . $id_pedido;
+                            $referencia = "Devolucion" . $id_devolucion;
                             $sql = "SELECT id_movimiento FROM movimiento_inventario WHERE referencia='$referencia'";
         
                             $result = $mysqli->query($sql);
-        
-                            $id_movimiento = $result->fetch_assoc();
 
-                            $id_movimiento = $id_movimiento['id_movimiento'];
-        
-                            echo '
-                            <a href="../inventario/consultar.movimiento.php?id_movimiento=' . urlencode($id_movimiento) . '">
-                                <div class="img-container px-1" style="width:70px;height:60px;">
-                                    <img class="img-fluid" src="/images/entrada.png" alt="Movimiento">
-                                </div>
-                            </a>
-                            </div>';
+                            $num = $result->num_rows;
+
+                            if ($num == 1){
+
+                                $id_movimiento = $result->fetch_assoc();
+
+                                $id_movimiento = $id_movimiento['id_movimiento'];
+            
+                                echo '
+                                <a href="../inventario/consultar.movimiento.php?id_movimiento=' . urlencode($id_movimiento) . '">
+                                    <div class="img-container px-1" style="width:70px;height:60px;">
+                                        <img class="img-fluid" src="/images/entrada.png" alt="Movimiento">
+                                    </div>
+                                </a>
+                                </div>';
+
+                            }else{
+                                echo '
+                                </div>';
+                            }
                         }
                         ?>
                     </div>
