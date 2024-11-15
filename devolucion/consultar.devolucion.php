@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -39,65 +40,99 @@
 
 <body>
     <div class="d-flex flex-column min-vh-100">
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-primary bg-info">
-                <div class="container-fluid">
-                    <!-- Alinea el título a la izquierda -->
-                    <a class="navbar-brand px-2 text-white" href="../index.administrador.php">Siglo del Hombre</a>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <!-- Alinea los elementos del menú a la izquierda utilizando "mr-auto" -->
-                        <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="../pedidos/pedido.php">Pedidos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="../pedidos/metodo.pago.php">Metodo de Pago</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-white dropdown-toggle" href="devolucion.php" id="navbarDropdown" role="button">
-                                    Devoluciones
-                                </a>
-                                <div class="dropdown-menu-custom" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="../devolucion/proceso.php">Proceso</a>
-                                    <a class="dropdown-item" href="../devolucion/aceptada.php">Aceptada</a>
-                                    <a class="dropdown-item" href="../devolucion/rechazada.php">Rechazada</a>
+    <div class="d-flex flex-column min-vh-100">
+			<header>
+				<nav class="navbar navbar-expand-lg navbar-primary bg-info">
+					<div class="container-fluid">
+						<!-- Alinea el título a la izquierda -->
+						<a class="navbar-brand px-2 text-white" href="../index.administrador.php">Siglo del Hombre</a>
+						<div class="collapse navbar-collapse" id="navbarSupportedContent">
+							<!-- Alinea los elementos del menú a la izquierda utilizando "mr-auto" -->
+							<ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+								<li class="nav-item">
+									<a class="nav-link text-white" href="../pedidos/pedido.php">Pedidos</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link text-white" href="../pedidos/metodo.pago.php">Metodo de Pago</a>
+								</li>
+								<li class="nav-item dropdown">
+									<a class="nav-link text-white dropdown-toggle" href="devolucion.php" id="navbarDropdown" role="button">
+										Devoluciones
+									</a>
+									<div class="dropdown-menu-custom" aria-labelledby="navbarDropdown">
+										<a class="dropdown-item" href="../devolucion/proceso.php">Proceso</a>
+										<a class="dropdown-item" href="../devolucion/aceptada.php">Aceptada</a>
+										<a class="dropdown-item" href="../devolucion/rechazada.php">Rechazada</a>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</nav>
+			</header>
+
+			<main class="flex-fill">
+            <div class="container mt-4">
+            <div class="d-flex align-items-center mb-1">
+				<div class="pr-2">
+					<h2>Consultar Devolucion</h2>
+				</div>
+                    <div class="ml-auto">
+                    <?php
+                        require "../conexion.php";
+                        if (isset($_GET['id_devolucion'])){
+
+                            $id_devolucion = intval($_GET['id_devolucion']);
+
+
+                            $sql = "SELECT referencia FROM devolucion WHERE id_devolucion=$id_devolucion";
+
+                            $result = $mysqli->query($sql);
+
+                            $referencia = $result->fetch_assoc();
+
+                            $referencia = $referencia['referencia'];
+
+                            $id_pedido = intval(preg_replace('/[^0-9]+/', '', $referencia));
+
+                            $num = $result->num_rows;
+
+                            if ($num == 1){
+                                echo '
+                                <div class="img-container d-flex flex-row-reverse">
+                                <a href="../pedidos/consultar.pedido.administrador.php?id=' . urlencode($id_pedido) . '">
+                                    <div class="img-container px-1" style="width:70px;height:60px;">
+                                        <img class="img-fluid" src="/images/pedido.jpg" alt="entrada">
+                                    </div>
+                                </a>';
+                            }else{
+                                echo '
+                                <div class="img-container">';
+                            }
+
+                            $referencia = "Pedido" . $id_pedido;
+                            $sql = "SELECT id_movimiento FROM movimiento_inventario WHERE referencia='$referencia'";
+        
+                            $result = $mysqli->query($sql);
+        
+                            $id_movimiento = $result->fetch_assoc();
+
+                            $id_movimiento = $id_movimiento['id_movimiento'];
+        
+                            echo '
+                            <a href="../inventario/consultar.movimiento.php?id_movimiento=' . urlencode($id_movimiento) . '">
+                                <div class="img-container px-1" style="width:70px;height:60px;">
+                                    <img class="img-fluid" src="/images/entrada.png" alt="Movimiento">
                                 </div>
-                            </li>
-                        </ul>
+                            </a>
+                            </div>';
+                        }
+                        ?>
                     </div>
-                </div>
-            </nav>
-        </header>
+				</div>
 
-        <div class="container mt-5">
-            <div class="pr-2">
-                <h2>Consultar pedido</h2>
-            </div>
-            <div class="ml-auto">
-                <?php
-                require "../conexion.php";
+				<?php
                 
-                if (isset($_GET['id_devolucion'])) {
-
-                    $id_devolucion = intval($_GET['id_devolucion']);
-
-                    $sql = "SELECT referencia FROM devolucion WHERE id_devolucion=$id_devolucion";
-
-                    $result = $mysqli->query($sql);
-
-                    $referencia = $result->fetch_assoc();
-
-                    $referencia = $referencia['referencia'];
-
-                    $id_pedido = intval(preg_replace('/[^0-9]+/', '', $referencia));
-
-                    var_dump($id_pedido);
-                ?>
-            </div>
-            <?php
-
-            
-
             if (isset($_GET['id_devolucion'])) {
 
                 $id_devolucion = intval($_GET['id_devolucion']);
@@ -161,15 +196,30 @@
                     </table>
                 </div>
 
-                <a href="devolucion.php" class="btn btn-secondary">Atras</a>
+                <a href="devolucion.php" class="btn btn-secondary mb-3">Atras</a>
                 <?php if ($devolucion['estado'] == 'Proceso') {  ?>
-                    <a href="aceptar.devolucion.php?id_devolucion=<?php echo $id_devolucion; ?>" class="btn btn-success">Aceptar</a>
-                    <a href="rechazar.devolucion.php?id_devolucion=<?php echo $id_devolucion; ?>" class="btn btn-danger">Rechazar</a>
+                    <a href="aceptar.devolucion.php?id_devolucion=<?php echo $id_devolucion; ?>" class="btn btn-success mb-3">Aceptar</a>
+                    <a href="rechazar.devolucion.php?id_devolucion=<?php echo $id_devolucion; ?>" class="btn btn-danger mb-3">Rechazar</a>
                 <?php }else if($devolucion['estado'] == 'Aceptada') { ?>
-                    <a href="generar.movimiento.php?id_devolucion=<?php echo $id_devolucion; ?>" class="btn btn-success">Generar movimiento</a>
+                    <a href="generar.movimiento.php?id_devolucion=<?php echo $id_devolucion; ?>" class="btn btn-success mb-3">Generar movimiento</a>
                 <?php  } ?>
             </form>
         </div>
+
+        <footer class="bg-dark text-white pt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>&copy; 2024 Ferretería Vagales. Todos los derechos reservados.</p>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <a href="contacto.html" class="text-white">Contacto</a> |
+                        <a href="privacidad.html" class="text-white">Política de Privacidad</a> |
+                        <a href="terminos.html" class="text-white">Términos de Servicio</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
 
         <script>
             document.getElementById('orderLinesTable').addEventListener('click', function(event) {
