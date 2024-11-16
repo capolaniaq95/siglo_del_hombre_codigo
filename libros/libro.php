@@ -48,17 +48,77 @@
         <main class="flex-fill">
             <div class="container mt-4">
                 <h2>Libros</h2>
-                <a href="agregar.libro.php" class="btn btn-info mb-3">Agregar Nuevo libro</a>
-                <a onclick="window.print()" class="btn btn-info mb-3">Imprimir Informe</a>
+                <div class="d-flex bd-highlight mb-1">
+                    <div class="pr-2 bd-highlight">
+                    <a href="agregar.libro.php" class="btn btn-info mb-3">Agregar Nuevo libro</a>
+                    <a onclick="window.print()" class="btn btn-info mb-3">Imprimir Informe</a>
+                    </div>
+                    <div class="ml-auto pr-2 bd-highlight">
+                        <form class="form-inline my-2 my-lg-0" method="POST" action="libro.php">
+                                <select class="form-control mr-1" id="filtro" name="filtro">
+                                    <option value="id_libro">ID</option>
+                                    <option value="categoria">Categoria</option>
+                                    <option value="titulo">Libro</option>
+                                    <option value="autor">Autor</option>
+                                    <option value="editorial">Editorial</option>
+                                    <option value="descripcion">Descripcion</option>
+                                    <option value="estado">Estado</option>
+                                    <option value="stock">Stock</option>
+                                </select>
+                            <input class="form-control mr-sm-1" type="search" placeholder="Buscar" aria-label="Search" name="search">
+                            <button class="btn btn-success my-1 my-sm-0" type="submit">Buscar</button>
+                        </form>
+                    </div>
+                </div>
                 <div>
                     <?php
                     require '../conexion.php';
 
-                    $sql = "SELECT libro.id_libro, categoria.categoria, autor.nombre, libro.titulo, libro.descripcion, libro.editorial, libro.precio, libro.imagen, libro.stock, libro.estado
-                    FROM libro
-                    INNER JOIN categoria ON libro.id_categoria=categoria.id_categoria
-                    INNER JOIN autor ON libro.id_autor=autor.id_autor
-                    ORDER by id_libro desc";
+                    if (isset($_GET['page'])){
+                        $page = (int) $_GET['page'];
+
+                        $page = (int) ($page - 1) * 10;
+
+
+                        $sql = "SELECT libro.id_libro, categoria.categoria, autor.nombre, libro.titulo, libro.descripcion, libro.editorial, libro.precio, libro.imagen, libro.stock, libro.estado
+                                FROM libro
+                                INNER JOIN categoria ON libro.id_categoria=categoria.id_categoria
+                                INNER JOIN autor ON libro.id_autor=autor.id_autor
+                                ORDER by id_libro
+                                DESC
+                                LIMIT 10 OFFSET $page";
+                    }else if (isset($_POST['search'])){
+
+                        $by = $_POST['filtro'];
+                        $search = $_POST['search'];
+
+                        if ($by == 'autor'){
+                            $by = 'autor.nombre';
+                        }else if ($by == 'categoria')
+                            $by = 'categoria.' . $by;
+                        else{
+                            $by = 'libro.' . $by;
+                        }
+
+                        $sql = "SELECT libro.id_libro, categoria.categoria, autor.nombre, libro.titulo, libro.descripcion, libro.editorial, libro.precio, libro.imagen, libro.stock, libro.estado
+                                FROM libro
+                                INNER JOIN categoria ON libro.id_categoria=categoria.id_categoria
+                                INNER JOIN autor ON libro.id_autor=autor.id_autor
+                                WHERE $by LIKE '%$search%'
+                                ORDER by id_libro
+                                DESC
+                                LIMIT 10";
+                    }else{
+
+                        $sql = "SELECT libro.id_libro, categoria.categoria, autor.nombre, libro.titulo, libro.descripcion, libro.editorial, libro.precio, libro.imagen, libro.stock, libro.estado
+                        FROM libro
+                        INNER JOIN categoria ON libro.id_categoria=categoria.id_categoria
+                        INNER JOIN autor ON libro.id_autor=autor.id_autor
+                        ORDER by id_libro
+                        DESC
+                        LIMIT 10";
+
+                    }
 
                     $result = $mysqli->query($sql);
 
@@ -115,12 +175,59 @@
 
                         $result->free();
                     }
-
-                    $mysqli->close();
                     ?>
                 </div>
             </div>
         </main>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <?php
+                    $query_total = "SELECT COUNT(id_libro) as libros FROM libro";
+
+                    if (isset($_GET['page'])){
+                        $previous_page = (int) ($_GET['page'] - 1);
+                        if ($previous_page == 0){
+                            $previous_page= 1;
+                        }
+                    }else{
+                        $previous_page= 1;
+                    }
+                    echo '<li class="page-item">
+                    <a class="page-link" href="libro.php?page=' . urlencode($previous_page) . '">Anterior</a>
+                        </li>';
+                    $result_total = $mysqli->query($query_total);
+
+                    $total_results = $result_total->fetch_assoc();
+
+                    $total_results = (int) $total_results["libros"];
+
+                    $pages = ($total_results / 10);
+
+                    $pages = ceil($pages);
+
+                    for ($i = 1; $i <=$pages; $i++){
+                        echo '<li class="page-item">
+                                <a class="page-link" href="libro.php?page=' . urlencode($i) . '">' . htmlspecialchars($i). '</a>
+                                </li>';
+                    }
+                    if (isset($_GET['page'])){
+                        $next_page = (int) $_GET['page'] + 1;
+                        if ($next_page > $pages){
+                            $next_page = $pages;
+                        }
+                    }else {
+                        $next_page = 2;
+                    }
+                    echo '<li class="page-item">
+                        <a class="page-link" href="libro.php?page=' . urlencode($next_page) . '">Siguiente</a>
+                    </li>';
+
+
+                    $mysqli->close();
+                    ?>
+            </ul>
+        </nav>
 
         <footer class="bg-dark text-white py-3">
             <div class="container">
