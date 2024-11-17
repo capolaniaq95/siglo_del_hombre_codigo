@@ -36,13 +36,60 @@
         <main class="flex-fill">
             <div class="container mt-4">
                 <h2>Categoria</h2>
-                <a href="agregar.categoria.php" class="btn btn-info mb-3">Agregar Nueva Categoria</a>
-                <a onclick="window.print()" class="btn btn-info mb-3">Imprimir Informe</a>
+                <div class="d-flex bd-highlight mb-1">
+                    <div class="pr-2 bd-highlight">
+                        <a href="agregar.categoria.php" class="btn btn-info mb-3">Agregar Nueva Categoria</a>
+                        <a onclick="window.print()" class="btn btn-info mb-3">Imprimir Informe</a>
+                    </div>
+                    <div class="ml-auto pr-2 bd-highlight">
+                        <form class="form-inline my-2 my-lg-0" method="POST" action="categoria.php">
+                                <select class="form-control mr-1" id="filtro" name="filtro">
+                                    <option value="id_categoria">ID</option>
+                                    <option value="categoria">Categoria</option>
+                                </select>
+                            <input class="form-control mr-sm-1" type="search" placeholder="Buscar" aria-label="Search" name="search">
+                            <button class="btn btn-success my-1 my-sm-0" type="submit">Buscar</button>
+                        </form>
+                    </div>
+                </div>
                 <div>
                     <?php
                     require '../conexion.php';
 
-                    $sql = "SELECT `id_categoria`, `categoria`, `imagen` FROM `categoria`";
+                    if (isset($_GET['page'])){
+
+                        $page = (int) $_GET['page'];
+
+                        $page = (int) ($page - 1) * 10;
+
+
+                        $sql = "SELECT `id_categoria`, `categoria`, `imagen`
+                                FROM `categoria`
+                                ORDER BY id_categoria
+                                DESC
+                                LIMIT 10 OFFSET $page";
+
+                    }else if (isset($_POST['search'])){
+
+                        $by = $_POST['filtro'];
+                        $search = $_POST['search'];
+
+
+                        $sql = "SELECT `id_categoria`, `categoria`, `imagen`
+                                FROM `categoria`
+                                WHERE $by LIKE '%$search%'
+                                ORDER BY id_categoria
+                                DESC
+                                LIMIT 10";
+
+                    }else{
+
+                        $sql = "SELECT `id_categoria`, `categoria`, `imagen`
+                                FROM `categoria`
+                                ORDER BY id_categoria
+                                DESC
+                                LIMIT 10";
+                    }
 
                     $result = $mysqli->query($sql);
 
@@ -86,11 +133,59 @@
                         $result->free();
                     }
 
-                    $mysqli->close();
                     ?>
                 </div>
             </div>
         </main>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <?php
+                    $query_total = "SELECT COUNT(id_categoria) as categorias FROM categoria";
+
+                    if (isset($_GET['page'])){
+                        $previous_page = (int) ($_GET['page'] - 1);
+                        if ($previous_page == 0){
+                            $previous_page= 1;
+                        }
+                    }else{
+                        $previous_page= 1;
+                    }
+                    echo '<li class="page-item">
+                    <a class="page-link" href="categoria.php?page=' . urlencode($previous_page) . '">Anterior</a>
+                        </li>';
+                    $result_total = $mysqli->query($query_total);
+
+                    $total_results = $result_total->fetch_assoc();
+
+                    $total_results = (int) $total_results["categorias"];
+
+                    $pages = ($total_results / 10);
+
+                    $pages = ceil($pages);
+
+                    for ($i = 1; $i <=$pages; $i++){
+                        echo '<li class="page-item">
+                                <a class="page-link" href="categoria.php?page=' . urlencode($i) . '">' . htmlspecialchars($i). '</a>
+                                </li>';
+                    }
+                    if (isset($_GET['page'])){
+                        $next_page = (int) $_GET['page'] + 1;
+                        if ($next_page > $pages){
+                            $next_page = $pages;
+                        }
+                    }else {
+                        $next_page = 2;
+                    }
+                    echo '<li class="page-item">
+                        <a class="page-link" href="categoria.php?page=' . urlencode($next_page) . '">Siguiente</a>
+                    </li>';
+
+
+                    $mysqli->close();
+                    ?>
+            </ul>
+        </nav>
 
         <footer class="bg-dark text-white py-3">
             <div class="container">

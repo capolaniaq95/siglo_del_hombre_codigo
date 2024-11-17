@@ -125,18 +125,6 @@
                                 </a>
                             </div>
 
-                            <div class="col-md-6 col-lg-4">
-                                <a class="d-block portfolio-item card" data-toggle="modal" href="/devolucion/devolucion.php">
-                                    <h4 class="text-center text-secondary">Devoluciones</h4>
-                                    <div class="portfolio-item-caption text-center">
-                                        <i class="fa fa-search-plus"></i>
-                                    </div>
-                                    <div class="img-container">
-                                        <img class="img-fluid" src="/images/icono_devoluciones.png" alt="ubicaciones">
-                                    </div>
-                                </a>
-                            </div>
-
                         </div>
                 </div>
             </section>
