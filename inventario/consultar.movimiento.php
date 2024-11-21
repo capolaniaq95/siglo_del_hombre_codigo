@@ -128,8 +128,10 @@ if (isset($_GET['id_movimiento'])) {
                 </div>
             </nav>
         </header>
+
         <div class="container mt-5">
             <h2>Formulario de movimiento de inventario</h2>
+            
             <?php if (isset($mensaje)) : ?>
                 <div class="alert alert-info"><?php echo htmlspecialchars($mensaje); ?></div>
             <?php endif; ?>
@@ -182,6 +184,21 @@ if (isset($_GET['id_movimiento'])) {
 
             </form>
         </div>
+
+        <footer class="bg-dark text-white py-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>&copy; 2024 Ferretería Vagales. Todos los derechos reservados.</p>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <a href="contacto.html" class="text-white">Contacto</a> |
+                        <a href="privacidad.html" class="text-white">Política de Privacidad</a> |
+                        <a href="terminos.html" class="text-white">Términos de Servicio</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
 
         <script>
             document.getElementById('addLineBtn').addEventListener('click', function() {
