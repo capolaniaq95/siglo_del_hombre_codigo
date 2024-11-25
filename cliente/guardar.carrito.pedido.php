@@ -69,7 +69,7 @@
 
             $orderDate = $_REQUEST['orderDate'];
             $customer = intval($_REQUEST['customer']);
-			$payment = intval($_REQUEST['payment']);
+			      $payment = intval($_REQUEST['payment']);
             $libros = array($_REQUEST['libros_ids']);
             $cantidades = array($_REQUEST['cantidades']);
             $precios = array($_REQUEST['precios']);

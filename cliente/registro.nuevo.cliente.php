@@ -115,6 +115,17 @@
 
                     $correo = $_POST['correo'];
 
+                    $sql = "SELECT id_usuario FROM usuario WHERE correo='$correo'";
+
+                    $result = $mysqli->query($sql);
+
+                    $num = $result->num_rows;
+
+                    if ($num == 1) {
+                      echo "<script> alert('Correo electrónico ya se encuentra registrado en la base de datos.');window.location='registro.php' </script>";
+                      exit();
+                    }
+
                     $match_correo = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
                     if (!preg_match($match_correo, $correo)) {
                         echo "<script> alert('Correo electrónico incorrecto.');window.location='registro.php' </script>";
