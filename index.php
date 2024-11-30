@@ -11,9 +11,9 @@ require "conexion.php";
 /*
 $mail = new PHPMailer(true);
 
-try {
+// try {
     // Configuración del servidor SMTP para Outlook
-    $mail->isSMTP();                                            
+                  $mail->isSMTP(); 
     $mail->Host       = 'smtp.office365.com';  // Servidor SMTP de Outlook (Office 365)
     $mail->SMTPAuth   = true;                                   
     $mail->Username   = 'carlos_apolania@soy.sena.edu.co'; // Tu dirección de correo Outlook

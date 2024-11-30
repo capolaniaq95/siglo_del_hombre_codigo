@@ -1,10 +1,74 @@
+<?php
+require "../conexion.php";
+
+$sql = "SELECT id_libro, titulo, precio FROM libro";
+$resultado_libros = $mysqli->query($sql);
+$options_libro = "<option value=''>Selecciona un libro</option>";
+if ($resultado_libros->num_rows > 0) {
+    while ($fila = $resultado_libros->fetch_assoc()) {
+        $options_libro .= "<option value='" . htmlspecialchars($fila['id_libro']) . "' data-precio='" . htmlspecialchars($fila['precio']) . "'>" . htmlspecialchars($fila['titulo']) . "</option>";
+    }
+}
+
+
+$sql = "SELECT `id_ubicacion`, `ubicacion` FROM `ubicacion`";
+$resultado_ubicacion = $mysqli->query($sql);
+$options_ubicacion = "<option value=''>Selecciona un ubicacion</option>";
+if ($resultado_ubicacion->num_rows > 0) {
+    while ($fila = $resultado_ubicacion->fetch_assoc()) {
+        $options_ubicacion .= "<option value='" . htmlspecialchars($fila['id_ubicacion']) . "'>" . htmlspecialchars($fila['ubicacion']) . "</option>";
+    }
+}
+
+
+
+if (isset($_GET['id_movimiento'])) {
+    $id_movimiento = intval($_GET['id_movimiento']);
+
+    $sql = "SELECT movimiento_inventario.fecha, 
+					ubicacion_destino.ubicacion AS destino, 
+					ubicacion_origen.ubicacion AS origen,
+					movimiento_inventario.referencia,
+					movimiento_inventario.estado
+					FROM
+					movimiento_inventario
+					INNER JOIN
+					ubicacion AS ubicacion_destino ON movimiento_inventario.ubicacion_destino = ubicacion_destino.id_ubicacion
+					INNER JOIN
+					ubicacion AS ubicacion_origen ON movimiento_inventario.ubicacion_origen = ubicacion_origen.id_ubicacion
+					WHERE
+					movimiento_inventario.id_movimiento = $id_movimiento";
+
+    $result = $mysqli->query($sql);
+
+    $movimiento = $result->fetch_assoc();
+
+    $fecha = $movimiento['fecha'];
+    $destino = $movimiento['destino'];
+    $origen = $movimiento['origen'];
+    $referencia = $movimiento['referencia'];
+    $movimiento_estado = $movimiento['estado'];
+
+    $sql = "SELECT linea_movimiento_inventario.cantidad, libro.titulo
+			FROM
+			linea_movimiento_inventario
+			INNER JOIN
+			libro
+			ON linea_movimiento_inventario.id_libro=libro.id_libro
+			WHERE
+			linea_movimiento_inventario.id_movimiento=$id_movimiento";
+
+    $result = $mysqli->query($sql);
+}
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito de compras</title>
+    <title>Consultar movimiento</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <style>
         .dropdown-menu-custom {
@@ -55,9 +119,7 @@
 </head>
 
 <body>
-    <div class="d-flex flex-column min-vh-100">
-    <div class="d-flex flex-column min-vh-100">
-	<header>
+	    <header>
             <nav class="navbar navbar-expand-lg navbar-primary bg-info">
                 <div class="container-fluid">
                     <a class="navbar-brand px-2 text-white" href="../index.administrador.php">Siglo del Hombre</a>
@@ -94,10 +156,12 @@
                 </div>
                 <div class="ml-auto">
                     <?php
+
                     require "../conexion.php";
+
                     if (isset($_GET['id_movimiento'])){
 
-                        $id_movimiento = $_GET['id_movimiento'];
+                        $id_movimiento = intval($_GET['id_movimiento']);
 
                         $sql = "SELECT referencia FROM movimiento_inventario WHERE id_movimiento=$id_movimiento";
 
@@ -108,123 +172,119 @@
 
 						if (str_contains($referencia, 'Devolucion')){
 
-							
+							preg_match_all('/\d+(\.\d+)?/', $referencia, $id_devolucion);
+
 							echo '
                             <div class="img-container d-flex flex-row-reverse">
-                            <a href="../devolucion/consultar.devolucion.php?id_devolucion=' . urlencode($id_devolucion) . '">
+                            <a href="../devolucion/consultar.devolucion.php?id_devolucion=' . urlencode(intval($id_devolucion[0][0])) . '">
                                 <div class="img-container px-1" style="width:70px;height:60px;">
                                     <img class="img-fluid" src="/images/devolucion.png" alt="devolucion">
                                 </div>
-                            </a>';
-						}else{
-                            echo '
+                            </a>
                             <div class="img-container">';
+						}else{
+
+                            preg_match_all('/\d+(\.\d+)?/', $referencia, $id_pedido);
+
+                            echo '
+                            <div class="img-container d-flex flex-row-reverse">
+                            <a href="../pedidos/consultar.pedido.administrador.php?id=' . urlencode(intval($id_pedido[0][0])) . '">
+                                <div class="img-container px-1" style="width:70px;height:60px;">
+                                    <img class="img-fluid" src="/images/pedido.jpg" alt="entrada">
+                                </div>
+                            </a>';
                         }
 
-                        $referencia = "Pedido" . $id_pedido;
-                        $sql = "SELECT id_movimiento FROM movimiento_inventario WHERE referencia='$referencia'";
-    
-                        $result = $mysqli->query($sql);
-    
-                        $id_movimiento = $result->fetch_assoc();
-
-                        $id_movimiento = $id_movimiento['id_movimiento'];
-    
-                        echo '
-                        <a href="../inventario/consultar.movimiento.php?id_movimiento=' . urlencode($id_movimiento) . '">
-                            <div class="img-container px-1" style="width:70px;height:60px;">
-                                <img class="img-fluid" src="/images/entrada.png" alt="Movimiento">
-                            </div>
-                        </a>
-                        </div>';
                     }
                     ?>
-                </div>
+                </div>  
             </div>
                 <?php
-                if (isset($_GET['id'])){
-                    $id_pedido = $_GET['id'];
 
-                    $query = "SELECT usuario.nombre, metodo_de_pago.metodo, pedido.fecha, pedido.total FROM `pedido`
-                             INNER JOIN usuario
-                             ON pedido.id_usuario=usuario.id_usuario
-                             INNER JOIN metodo_de_pago
-                             ON pedido.id_metodo_de_pago=metodo_de_pago.id_metodo_de_pago
-                             WHERE pedido.id_pedido=$id_pedido";
+                    $query = "SELECT movimiento_inventario.fecha, 
+                                ubicacion_destino.ubicacion AS destino, 
+                                ubicacion_origen.ubicacion AS origen,
+                                movimiento_inventario.referencia,
+                                movimiento_inventario.estado
+                                FROM
+                                movimiento_inventario
+                                INNER JOIN
+                                ubicacion AS ubicacion_destino ON movimiento_inventario.ubicacion_destino = ubicacion_destino.id_ubicacion
+                                INNER JOIN
+                                ubicacion AS ubicacion_origen ON movimiento_inventario.ubicacion_origen = ubicacion_origen.id_ubicacion
+                                WHERE
+                                movimiento_inventario.id_movimiento = $id_movimiento";
                     
                     $result = $mysqli->query($query);
 
-                    $pedido = $result->fetch_assoc();
-
-                    $cliente = $pedido['nombre'];
-                    $metodo = $pedido['metodo'];
-                    $fecha = $pedido['fecha'];
-                    $total = $pedido['total'];
+                    $movimiento = $result->fetch_assoc();
+                
+                    $fecha = $movimiento['fecha'];
+                    $destino = $movimiento['destino'];
+                    $origen = $movimiento['origen'];
+                    $referencia = $movimiento['referencia'];
+                    $movimiento_estado = $movimiento['estado'];
                     
-                    $sql = "SELECT libro.titulo, libro.precio, linea_de_pedido.cantidad, linea_de_pedido.total_linea
-                            FROM `linea_de_pedido`
-                            INNER JOIN libro
-                            ON linea_de_pedido.id_libro=libro.id_libro
-                            WHERE id_pedido=$id_pedido";
+                    $sql = "SELECT linea_movimiento_inventario.cantidad, libro.titulo
+                            FROM
+                            linea_movimiento_inventario
+                            INNER JOIN
+                            libro
+                            ON linea_movimiento_inventario.id_libro=libro.id_libro
+                            WHERE
+                            linea_movimiento_inventario.id_movimiento=$id_movimiento";
 
                     $result_linea = $mysqli->query($sql);
             
                 ?>
-                    <form action="guardar.carrito.pedido.php" method="POST">
-                        <div class="form-group">
-                            <label for="orderDate">Fecha</label>
-                            <input type="text" class="form-control" id="orderDate" name="orderDate" value="<?php echo $fecha; ?>" readonly required>
-                        </div>
-                        <div class="form-group">
-                            <label for="customerName">Nombre del Cliente</label>
-                            <input type="text" class="form-control" id="orderDate" name="costomer" value="<?php echo $cliente; ?>" readonly required>
-                        </div>
-                        <div class="form-group">
-                            <label for="paymentmethod">Metodo de Pago</label>
-                            <input type="text" class="form-control" id="orderDate" name="orderDate" value="<?php echo $metodo; ?>" readonly required>
-                        </div>
+            
+            <form action="guardar.movimiento.inventario.php" method="POST">
+                <div class="form-group">
+                    <label for="orderDate">Fecha</label>
+                    <input type="text" class="form-control" id="orderDate" name="orderDate" value="<?php echo $fecha ?>" readonly required>
+                </div>
+                <div class="form-group">
+                    <label for="customerName">ubicacion origen</label>
+                    <input type="text" class="form-control" id="origen" name="origen" value="<?php echo $origen ?>" readonly required>
+                </div>
 
-                        <h4>Líneas de Pedido</h4>
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="orderLinesTable">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>Libro</th>
-                                        <th>Cantidad</th>
-                                        <th>Precio Unitario</th>
-                                        <th>Subtotal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php while($linea_pedido = $result_linea->fetch_assoc()):
-                                        $libro = $linea_pedido['titulo'];
-                                        $cantidad = intval($linea_pedido['cantidad']);
-                                        $precio = floatval($linea_pedido['precio']);
-                                        $subtotal = floatval($linea_pedido['total_linea']);
-                                    ?>
-                                        <tr>
-                                            <td><input type="text" class="form-control" name="libros[]" value="<?php echo $libro; ?>" readonly required></td>
-                                            <td><input type="number" class="form-control cantidad-input" name="cantidades[]" value="<?php echo $cantidad; ?>" readonly required></td>
-                                            <td><input type="number" class="form-control precio-input" name="precios[]" value="<?php echo $precio; ?>" readonly required></td>
-                                            <td><input type="number" class="form-control subtotal" name="subtotales[]" value="<?php echo $subtotal; ?>" readonly required></td>
-                                        </tr>
-                                    <?php endwhile; ?>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="form-group mt-3">
-                            <label for="totalAmount">Total</label>
-                            <input type="text" class="form-control" id="totalamount" name="totalamount" value="<?php echo $total; ?>" readonly required>
-                        </div>
-
-                        <!-- <button type="submit" class="btn btn-success">Guardar Pedido</button> -->
-                        <a href="pedido.php" class="btn btn-secondary mb-3">Atras</a>
-                    </form>
-                <?php
-                }
-                ?>
-            </div>
+                <div class="form-group">
+                    <label for="customerName">Ubicacion Destino</label>
+                    <input type="text" class="form-control" id="destino" name="destino" value="<?php echo $destino ?>" readonly required>
+                </div>
+                <div class="form-group">
+                    <label for="orderDate">Referencia</label>
+                    <input type="text" class="form-control" id="referencia" name="referencia" value="<?php echo $referencia ?>" readonly required>
+                </div>
+                <h4>Líneas de Pedido</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="orderLinesTable">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>libro</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($linea = $result_linea->fetch_assoc()):
+                                $cantidad = intval($linea['cantidad']);
+                                $libro = $linea['titulo'];
+                            ?>
+                                <tr>
+                                    <td><input type="text" class="form-control quantity" name="libro" value="<?php echo $libro; ?>" readonly required></td>
+                                    <td><input type="number" class="form-control quantity" name="cantidad" value="<?php echo $cantidad; ?>" readonly required></td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group">
+                    <a href="inventario.php" class="btn btn-secondary">Atras</a>
+                    <?php if ($movimiento_estado == 'Proceso'):
+                        echo '<a href="completar.movimiento.php?id=' . urlencode($id_movimiento) . '" class="btn btn-success">Completar</a>';
+                    endif; ?>
+                </div>
+            </form>
         </main>
 
         <footer class="bg-dark text-white py-3">
@@ -241,50 +301,38 @@
                 </div>
             </div>
         </footer>
-    </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            updateAll();
-
-            // Reasignar eventos después de asegurarse de que jQuery está completamente cargado
-            $('.cantidad-input').on('input', function () {
-                updateSubtotal(this.closest('tr'));
-                updateTotal();
+        <script>
+            document.getElementById('addLineBtn').addEventListener('click', function() {
+                const tableBody = document.getElementById('orderLinesTable').getElementsByTagName('tbody')[0];
+                const newRow = tableBody.insertRow();
+                newRow.innerHTML = `
+                <tr>
+                    <td>
+                        <select name="libros[]" class="form-control productSelect" onchange="updatePrice(this)">
+                            <?php echo $options_libro; ?>
+                        </select>
+                    </td>
+                    <td><input type="number" class="form-control quantity" name="cantidades[]" onchange="calculateSubtotal(this)" required></td>
+                    <td><button type="button" class="btn btn-danger removeRow">Eliminar</button></td>
+                </tr>
+            `;
+                newRow.querySelector('.removeRow').addEventListener('click', function() {
+                    tableBody.deleteRow(newRow.rowIndex - 1);
+                    updateTotal();
+                });
             });
 
-            $('#orderLinesTable').on('click', '.removeRow', function () {
-                $(this).closest('tr').remove();
-                updateTotal();
+            document.getElementById('orderLinesTable').addEventListener('click', function(event) {
+                if (event.target && event.target.classList.contains('removeRow')) {
+                    event.target.closest('tr').remove();
+                    updateTotal();
+                }
             });
+        </script>
 
-            function updateSubtotal(row) {
-                const cantidad = parseFloat($(row).find('.cantidad-input').val()) || 0;
-                const precio = parseFloat($(row).find('.precio-input').val()) || 0;
-                const subtotal = cantidad * precio;
-                $(row).find('.subtotal').val(subtotal.toFixed(2));
-            }
-
-            function updateTotal() {
-                let total = 0;
-                $('.subtotal').each(function () {
-                    total += parseFloat($(this).val()) || 0;
-                });
-                $('#totalAmount').val(total.toFixed(2));
-            }
-
-            function updateAll() {
-                $('#orderLinesTable tbody tr').each(function () {
-                    updateSubtotal(this);
-                });
-                updateTotal();
-            }
-        });
-    </script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
