@@ -68,8 +68,8 @@ if (isset($_GET['id_movimiento'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de movimiento inventario</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Consultar movimiento</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <style>
         .dropdown-menu-custom {
             display: none;
@@ -92,15 +92,34 @@ if (isset($_GET['id_movimiento'])) {
             color: white;
         }
 
+        .page-item a:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
         .nav-item:hover .dropdown-menu-custom {
             display: block;
+        }
+        
+
+
+        .table td, .table th {
+            white-space: nowrap; 
+        }
+
+        .table-container {
+            width: 1000px;
+        }
+
+        #filtro a:hover {
+            background-color: #17a2b8;
+            color: white;
         }
     </style>
 </head>
 
 <body>
-    <div class="d-flex flex-column min-vh-100">
-        <header>
+<header>
             <nav class="navbar navbar-expand-lg navbar-primary bg-info">
                 <div class="container-fluid">
                     <a class="navbar-brand px-2 text-white" href="../index.administrador.php">Siglo del Hombre</a>
@@ -110,14 +129,15 @@ if (isset($_GET['id_movimiento'])) {
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
                             <li class="nav-item dropdown">
-                                <a class="nav-link text-white dropdown-toggle" href="inventario.php" id="navbarDropdown" role="button">
+                                <a class="nav-link text-white dropdown-toggle" href="" id="navbarDropdown" role="button">
                                     Inventario
                                 </a>
                                 <div class="dropdown-menu-custom" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="#">Entradas</a>
-                                    <a class="dropdown-item" href="#">Salidas</a>
-                                    <a class="dropdown-item" href="#">En proceso</a>
-                                    <a class="dropdown-item" href="#">Completadas</a>
+                                    <a class="dropdown-item" href="/inventario/entrada.php">Entradas</a>
+                                    <a class="dropdown-item" href="/inventario/salida.php">Salidas</a>
+                                    <a class="dropdown-item" href="/inventario/proceso.php">En proceso</a>
+                                    <a class="dropdown-item" href="/inventario/completado.php">Completadas</a>
+                                    <a class="dropdown-item" href="/inventario/existencias.php">Existencias</a>
                                 </div>
                             </li>
                             <li class="nav-item">
@@ -129,12 +149,98 @@ if (isset($_GET['id_movimiento'])) {
             </nav>
         </header>
 
-        <div class="container mt-5">
-            <h2>Formulario de movimiento de inventario</h2>
+        <main class="flex-fill">
+            <div class="container mt-4">
+            <div class="d-flex align-items-center mb-1">
+                <div class="pr-2">
+                    <h2>Formulario de movimiento inventario</h2>
+                </div>
+                <div class="ml-auto">
+                    <?php
+
+                    require "../conexion.php";
+
+                    if (isset($_GET['id_movimiento'])){
+
+                        $id_movimiento = intval($_GET['id_movimiento']);
+
+                        $sql = "SELECT referencia FROM movimiento_inventario WHERE id_movimiento=$id_movimiento";
+
+                        $result = $mysqli->query($sql);
+
+                        $referencia = $result->fetch_assoc();
+						$referencia = $referencia['referencia'];
+
+						if (str_contains($referencia, 'Devolucion')){
+
+							preg_match_all('/\d+(\.\d+)?/', $referencia, $id_devolucion);
+
+							echo '
+                           <div class="img-container d-flex flex-row-reverse">
+                            <a href="../devolucion/consultar.devolucion.php?id_devolucion=' . urlencode(intval($id_devolucion[0][0])) . '">
+                                <div class="img-container px-1" style="width:70px;height:60px;">
+                                    <img class="img-fluid" src="/images/devolucion.png" alt="devolucion">
+                                </div>
+                            </a>';
+						}else if (str_contains($referencia, 'Pedido')){
+
+                            preg_match_all('/\d+(\.\d+)?/', $referencia, $id_pedido);
+
+                            echo '
+                            <div class="img-container d-flex flex-row-reverse">
+                            <a href="../pedidos/consultar.pedido.administrador.php?id=' . urlencode(intval($id_pedido[0][0])) . '">
+                                <div class="img-container px-1" style="width:70px;height:60px;">
+                                    <img class="img-fluid" src="/images/pedido.jpg" alt="entrada">
+                                </div>
+                            </a>';
+                        }else {
+                            echo '<div class="img-container d-flex flex-row-reverse">';
+                        }
+
+                    }
+                    ?>
+                    </div>
+                </div> 
+            </div>
+                <?php
+
+                    $query = "SELECT movimiento_inventario.fecha, 
+                                ubicacion_destino.ubicacion AS destino, 
+                                ubicacion_origen.ubicacion AS origen,
+                                movimiento_inventario.referencia,
+                                movimiento_inventario.estado
+                                FROM
+                                movimiento_inventario
+                                INNER JOIN
+                                ubicacion AS ubicacion_destino ON movimiento_inventario.ubicacion_destino = ubicacion_destino.id_ubicacion
+                                INNER JOIN
+                                ubicacion AS ubicacion_origen ON movimiento_inventario.ubicacion_origen = ubicacion_origen.id_ubicacion
+                                WHERE
+                                movimiento_inventario.id_movimiento = $id_movimiento";
+                    
+                    $result = $mysqli->query($query);
+
+                    $movimiento = $result->fetch_assoc();
+                
+                    $fecha = $movimiento['fecha'];
+                    $destino = $movimiento['destino'];
+                    $origen = $movimiento['origen'];
+                    $referencia = $movimiento['referencia'];
+                    $movimiento_estado = $movimiento['estado'];
+                    
+                    $sql = "SELECT linea_movimiento_inventario.cantidad, libro.titulo
+                            FROM
+                            linea_movimiento_inventario
+                            INNER JOIN
+                            libro
+                            ON linea_movimiento_inventario.id_libro=libro.id_libro
+                            WHERE
+                            linea_movimiento_inventario.id_movimiento=$id_movimiento";
+
+                    $result_linea = $mysqli->query($sql);
             
-            <?php if (isset($mensaje)) : ?>
-                <div class="alert alert-info"><?php echo htmlspecialchars($mensaje); ?></div>
-            <?php endif; ?>
+                ?>
+            
             <form action="guardar.movimiento.inventario.php" method="POST">
                 <div class="form-group">
                     <label for="orderDate">Fecha</label>
@@ -163,7 +269,7 @@ if (isset($_GET['id_movimiento'])) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php while ($linea = $result->fetch_assoc()):
+                            <?php while ($linea = $result_linea->fetch_assoc()):
                                 $cantidad = intval($linea['cantidad']);
                                 $libro = $linea['titulo'];
                             ?>
@@ -181,9 +287,8 @@ if (isset($_GET['id_movimiento'])) {
                         echo '<a href="completar.movimiento.php?id=' . urlencode($id_movimiento) . '" class="btn btn-success">Completar</a>';
                     endif; ?>
                 </div>
-
             </form>
-        </div>
+        </main>
 
         <footer class="bg-dark text-white py-3">
             <div class="container">

@@ -85,7 +85,7 @@
                         <form class="form-inline my-2 my-lg-0" method="POST" action="inventario.php">
                                 <select class="form-control mr-1" id="filtro" name="filtro">
                                     <option value="id_movimiento">ID</option>
-                                    <option value="tipo">Tipo</option>
+                                    <option value="tipo_movimiento">Tipo</option>
                                     <option value="estado">Estado</option>
                                     <option value="referencia">Referencia</option>
                                     <option value="referencia">Destino</option>
