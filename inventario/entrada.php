@@ -105,7 +105,6 @@
 
                         $page = (int) ($page - 1) * 10;
 
-
                         $sql = "SELECT
                         movimiento_inventario.id_movimiento,
                         movimiento_inventario.fecha,
