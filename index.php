@@ -143,7 +143,10 @@ $result = $mysqli->query($sql);
             <?php if (isset($_SESSION['carrito'])): ?>
               <li class="nav-item">
                 <a class="nav-link text-white" href="/cliente/carrito.php">
-                  <i class="fas fa-shopping-cart"></i>
+                  <div class="rounded-circle d-flex justify-content-center align-items-center"
+                  style="background-color: #28a745; width: 32px; height: 32px;">
+                    <i class="fas fa-shopping-cart"></i>
+                  </div>
                 </a>
               </li>
             <?php endif; ?>

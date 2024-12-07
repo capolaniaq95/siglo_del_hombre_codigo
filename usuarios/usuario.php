@@ -69,12 +69,13 @@
                     <a onclick="window.print()" class="btn btn-info mb-3">Imprimir Informe</a>
                     </div>
                     <div class="ml-auto pr-2 bd-highlight">
-                        <form class="form-inline my-2 my-lg-0" method="POST" action="entrada.php">
+                        <form class="form-inline my-2 my-lg-0" method="POST" action="usuario.php">
                                 <select class="form-control mr-1" id="filtro" name="filtro">
                                     <option value="id_usuario">ID</option>
                                     <option value="correo">Correo</option>
                                     <option value="direccion">Direccion</option>
                                     <option value="nombre">Nombre</option>
+                                    <option value="celular">Celular</option>
                                     <option value="id_tipo">Tipo</option>
                                 </select>
                             <input class="form-control mr-sm-1" type="search" placeholder="Buscar" aria-label="Search" name="search">
@@ -93,8 +94,10 @@
                         $page = (int) ($page - 1) * 10;
 
 
-                        $sql = "SELECT usuario.id_usuario, usuario.correo, usuario.direccion, usuario.nombre, tipo_de_usuario.tipo
+                        $sql = "SELECT usuario.id_usuario, usuario.correo, usuario.direccion, 
+                                       usuario.nombre, usuario.celular, tipo_de_usuario.tipo
                                 FROM usuario
+                                INNER JOIN tipo_de_usuario ON usuario.id_tipo=tipo_de_usuario.id_tipo
                                 ORDER BY id_usuario
                                 DESC
                                 LIMIT 10 OFFSET $page";
@@ -105,9 +108,17 @@
                         $by = $_POST['filtro'];
                         $search = $_POST['search'];
 
+                        if ($by == 'id_tipo'){
+                            $by = 'tipo_de_usuario.tipo';
+                        }else {
+                            $by = 'usuario.'. $by;
+                        }
 
-                        $sql = "SELECT usuario.id_usuario, usuario.correo, usuario.direccion, usuario.nombre, tipo_de_usuario.tipo
+
+                        $sql = "SELECT usuario.id_usuario, usuario.correo, usuario.direccion, 
+                                       usuario.nombre, usuario.celular, tipo_de_usuario.tipo
                                 FROM usuario
+                                INNER JOIN tipo_de_usuario ON usuario.id_tipo=tipo_de_usuario.id_tipo
                                 WHERE $by LIKE '%$search%'
                                 ORDER BY id_usuario
                                 DESC
@@ -116,14 +127,14 @@
 
                     }else{
 
-                        $sql = "SELECT usuario.id_usuario, usuario.correo, usuario.direccion, usuario.nombre, tipo_de_usuario.tipo
+                        $sql = "SELECT usuario.id_usuario, usuario.correo, usuario.direccion, 
+                                       usuario.nombre, usuario.celular, tipo_de_usuario.tipo
                         FROM usuario
                         INNER JOIN tipo_de_usuario ON usuario.id_tipo=tipo_de_usuario.id_tipo
                         ORDER BY id_usuario
                         DESC
                         LIMIT 10";
                     }
-
 
                     $result = $mysqli->query($sql);
 
@@ -138,6 +149,7 @@
                                           <th scope="col">Correo</th>
                                           <th scope="col">Direccion</th>
                                           <th scope="col">Nombre</th>
+                                          <th scope="col">Celular</th>
                                           <th scope="col">Tipo</th>
                                           <th scope="col" style="width: 200px">Acciones</th>
                                         </tr>
@@ -150,6 +162,7 @@
                                         <td>' . htmlspecialchars($row["correo"]) . '</td>
                                         <td>' . htmlspecialchars($row["direccion"]) . '</td>
                                         <td>' . htmlspecialchars($row["nombre"]) . '</td>
+                                        <td>' . htmlspecialchars($row["celular"]) . '</td>
                                         <td>' . htmlspecialchars($row["tipo"]) . '</td>
                                         <td>
                                             <div class="d-flex justify-content-start">
