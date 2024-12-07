@@ -41,14 +41,30 @@
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 					$categoria = $_REQUEST['categoria'];
-
+    
                     $match_correo = '/\d/';
                     if (preg_match($match_correo, $categoria)) {
                         echo "<script> alert('Categoria agregada con caracteres incorrectos, no pueden usarse numeros, ni caracteres especiales.');window.location='agregar.categoria.php' </script>";
                         exit();
                     }
 
-                    $sql = "INSERT INTO `categoria`(`categoria`) VALUES ('$categoria')";
+                    $imagen = $_FILES['imagen'];
+                    $directorio = __DIR__ . '../images/';
+                
+                    $rutaImagen = $directorio . basename($imagen['name']);
+                    
+                    if (file_exists($rutaImagen)) {
+                        echo "<script> alert('Imagen ya existe debe renombrarla');window.location='login.php' </script>";
+                    } else {
+                        if (move_uploaded_file($imagen['tmp_name'], $rutaImagen)) {
+                            echo "<div class='alert alert-success'>Imagen subida correctamente.</div>";
+                        } else {
+                            echo "<div class='alert alert-danger'> problema al cargar imagen.</div>";
+                        }
+                    }
+                    $imagen = 'images/' . basename($imagen['name']);
+
+                    $sql = "INSERT INTO `categoria`(`categoria`, `imagen`) VALUES ('$categoria', '$imagen')";
                     if ($mysqli->query($sql) === TRUE) {
                         echo "<div class='alert alert-success'>Categoria agregado correctamente.</div>";
                         echo "<a href='categoria.php' class='btn btn-primary'>Volver a la lista de Categoria</a>";
@@ -59,10 +75,14 @@
                     }
                 }
                 ?>
-                <form action="" method="post">
+                <form action="" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="ubicacion">Nombre de la Categoria</label>
                         <input type="text" class="form-control" id="ubicacion" name="categoria" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="imagen">Imagen</label>
+                        <input type="file" class="form-control" id="imagen" name="imagen" required>
                     </div>
                     <div class="form-group d-flex">
                         <button type="submit" class="btn btn-info mr-2">Agregar Categoria</button>

@@ -57,11 +57,31 @@
                 $descripcion = $_REQUEST['descripcion'];
                 $editorial = $_REQUEST['editorial'];
                 $precio = intval($_REQUEST['precio']);
-                $imagen = $_REQUEST['imagen'];
+                $imagen = $_FILES['imagen'];
+
+                $directorio = __DIR__ . '../images/';
+
+                if (!is_dir($directorio)) { 
+                    mkdir($directorio, 0755, true);
+                }
+                
+                $rutaImagen = $directorio . basename($imagen['name']);
+                
+                if (file_exists($rutaImagen)) {
+                    echo "<script> alert('Imagen ya existe debe renombrarla');window.location='login.php' </script>";
+                } else {
+                    if (move_uploaded_file($imagen['tmp_name'], $rutaImagen)) {
+                        echo "<div class='alert alert-success'>Imagen subida correctamente.</div>";
+                    } else {
+                        echo "<div class='alert alert-danger'> problema al cargar imagen.</div>";
+                    }
+                }
+
+                $imagen = 'images/' . basename($imagen['name']);
 
 
-                $sql = "INSERT INTO `libro`(`titulo`, `descripcion`, `editorial`, `imagen`, `precio`, `id_categoria`, `id_autor`)
-						 		VALUES ('$titulo','$descripcion','$editorial','$imagen', $precio, $categoria, $autor)";
+                $sql = "INSERT INTO `libro`(`titulo`, `descripcion`, `editorial`, `imagen`, `precio`, `estado`, `id_categoria`, `id_autor`)
+						 		VALUES ('$titulo','$descripcion','$editorial','$imagen', $precio, 'No Disponible', $categoria, $autor)";
                 if ($mysqli->query($sql) === TRUE) {
                     echo "<div class='alert alert-success'>libro agregado correctamente.</div>";
                     echo "<a href='/libros/libro.php' class='btn btn-primary'>Volver a la lista de libros</a>";

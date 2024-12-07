@@ -48,7 +48,24 @@
                         exit();
                     }
 
-                    $sql = "INSERT INTO `autor`(`nombre`) VALUES ('$nombre')";
+                    $imagen = $_FILES['imagen'];
+                    $directorio = __DIR__ . '../images/';
+                    
+                    $rutaImagen = $directorio . basename($imagen['name']);
+                        
+                    if (file_exists($rutaImagen)) {
+                            echo "<script> alert('Imagen ya existe debe renombrarla');window.location='login.php' </script>";
+                    } else {
+                        if (move_uploaded_file($imagen['tmp_name'], $rutaImagen)) {
+                            echo "<div class='alert alert-success'>Imagen subida correctamente.</div>";
+                        } else {
+                            echo "<div class='alert alert-danger'> problema al cargar imagen.</div>";
+                        }
+                    }
+                    $imagen = 'images/' . basename($imagen['name']);
+
+                    $sql = "INSERT INTO `autor`(`nombre`, `imagen`) VALUES ('$nombre', '$imagen')";
+
                     if ($mysqli->query($sql) === TRUE) {
                         echo "<div class='alert alert-success'>Autor agregado correctamente.</div>";
                         echo "<a href='autor.php' class='btn btn-primary'>Volver a la lista de Autores</a>";
@@ -59,14 +76,18 @@
                     }
                 }
                 ?>
-                <form action="" method="post">
+                <form action="" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="ubicacion">Nombre de la Autor</label>
                         <input type="text" class="form-control" id="ubicacion" name="nombre" required>
                     </div>
+                    <div class="form-group">
+                        <label for="imagen">Imagen</label>
+                        <input type="file" class="form-control" id="imagen" name="imagen" required>
+                    </div>
                     <div class="form-group d-flex">
                         <button type="submit" class="btn btn-info mr-2">Agregar Autor</button>
-                        <a href="ubicacion.php" class="btn btn-secondary">Cancelar</a>
+                        <a href="libro.php" class="btn btn-secondary">Cancelar</a>
                     </div>
                 </form>
             </div>
