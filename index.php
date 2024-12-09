@@ -203,7 +203,7 @@ $result = $mysqli->query($sql);
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         <?php
           while ($row = $result->fetch_assoc()) {
-            $imagenRuta = $row['imagen'];
+            $imagenRuta = '../libros/'. $row['imagen'];
             $idLibro = htmlspecialchars($row["id_libro"], ENT_QUOTES, 'UTF-8');
             $titulo = htmlspecialchars($row["titulo"], ENT_QUOTES, 'UTF-8');
             $descripcion = htmlspecialchars($row["descripcion"], ENT_QUOTES, 'UTF-8');

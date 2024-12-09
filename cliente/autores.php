@@ -154,7 +154,7 @@
             echo '<h1 class="mb-4">Libros de ' . htmlspecialchars($_GET['nombre_autor'], ENT_QUOTES, 'UTF-8') . '</h1>';
             echo '<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">';
             while ($row = $resultLibros->fetch_assoc()) {
-              $imagenLibroRuta = htmlspecialchars($row['imagen'], ENT_QUOTES, 'UTF-8');
+              $imagenLibroRuta = '../libros/' . $row['imagen'];
               $idLibro = htmlspecialchars($row["id_libro"], ENT_QUOTES, 'UTF-8');
               $titulo = htmlspecialchars($row["titulo"], ENT_QUOTES, 'UTF-8');
               $descripcion = htmlspecialchars($row["descripcion"], ENT_QUOTES, 'UTF-8');
@@ -188,7 +188,7 @@
 
           if ($resultAutores->num_rows > 0) {
             while ($row = $resultAutores->fetch_assoc()) {
-              $imagenRuta = htmlspecialchars($row['imagen'], ENT_QUOTES, 'UTF-8');
+              $imagenRuta = '../libros/'. $row['imagen'];
               $idAutor = htmlspecialchars($row["id_autor"], ENT_QUOTES, 'UTF-8');
               $nombreAutor = htmlspecialchars($row["nombre"], ENT_QUOTES, 'UTF-8');
 

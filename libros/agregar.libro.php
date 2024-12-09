@@ -22,13 +22,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $fecha_publicacion = $_POST["fecha_publicacion"];
   $editorial = $_POST["editorial"];
   $precio = $_POST["precio"];
-  $imagen = $_FILES["imagen"]["name"];
 
-  $imagen_directorio = "ruta/directorio/imagenes/" . basename($imagen);
-  move_uploaded_file($_FILES["imagen"]["tmp_name"], $imagen_directorio);
+  $imagen = $_FILES['imagen'];
+  $directorio = __DIR__ . '../images/';
+
+  $rutaImagen = $directorio . basename($imagen['name']);
+
+  if (file_exists($rutaImagen)) {
+          echo "<script> alert('Imagen ya existe debe renombrarla');window.location='login.php' </script>";
+  } else {
+      if (move_uploaded_file($imagen['tmp_name'], $rutaImagen)) {
+          echo "<div class='alert alert-success'>Imagen subida correctamente.</div>";
+      } else {
+          echo "<div class='alert alert-danger'> problema al cargar imagen.</div>";
+      }
+  }
+
+  $imagen = 'images/' . basename($imagen['name']);
 
 
-  $sql = "INSERT INTO libro (id_categoria, id_autor, titulo, descripcion, fecha_publicacion, editorial, precio, imagen) VALUES ('$categoria', '$autor', '$titulo', '$descripcion', '$fecha_publicacion', '$editorial', '$precio', '$imagen')";
+  $sql = "INSERT INTO libro (id_categoria, id_autor, titulo, descripcion, fecha_publicacion, editorial, precio, imagen)
+          VALUES ('$categoria', '$autor', '$titulo', '$descripcion', '$fecha_publicacion', '$editorial', '$precio', '$imagen')";
   if ($mysqli->query($sql) === TRUE) {
     echo '<script>alert("Libro ingresado exitosamente.");</script>';
     echo '<script>window.location.href = "listalibros.php";</script>';

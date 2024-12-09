@@ -131,7 +131,7 @@
 
           if ($result->num_rows > 0) {
           while ($row = $result->fetch_assoc()) {
-            $imagenRuta = $row['imagen'];
+            $imagenRuta = '../libros/' . $row['imagen'];
             $idLibro = htmlspecialchars($row["id_libro"], ENT_QUOTES, 'UTF-8');
             $titulo = htmlspecialchars($row["titulo"], ENT_QUOTES, 'UTF-8');
             $descripcion = htmlspecialchars($row["descripcion"], ENT_QUOTES, 'UTF-8');
@@ -192,7 +192,7 @@
 
           if ($result->num_rows > 0) {
           while ($row = $result->fetch_assoc()) {
-            $imagenRuta = $row['imagen'];
+            $imagenRuta = '../libros/' . $row['imagen'];
             $idLibro = htmlspecialchars($row["id_libro"], ENT_QUOTES, 'UTF-8');
             $titulo = htmlspecialchars($row["titulo"], ENT_QUOTES, 'UTF-8');
             $descripcion = htmlspecialchars($row["descripcion"], ENT_QUOTES, 'UTF-8');
@@ -247,7 +247,7 @@
 
           if ($result->num_rows > 0) {
           while ($row = $result->fetch_assoc()) {
-            $imagenRuta = $row['imagen'];
+            $imagenRuta = '../libros/' . $row['imagen'];
             $idLibro = htmlspecialchars($row["id_libro"], ENT_QUOTES, 'UTF-8');
             $titulo = htmlspecialchars($row["titulo"], ENT_QUOTES, 'UTF-8');
             $descripcion = htmlspecialchars($row["descripcion"], ENT_QUOTES, 'UTF-8');
@@ -275,6 +275,7 @@
             echo '</div>';
             echo '</div>';
             echo '</div>';
+            var_dump($imagenRuta);
           }
           } else {
 
@@ -309,7 +310,7 @@
 
           if ($result->num_rows > 0) {
           while ($row = $result->fetch_assoc()) {
-            $imagenRuta = $row['imagen'];
+            $imagenRuta = '../libros/' . $row['imagen'];
             $idLibro = htmlspecialchars($row["id_libro"], ENT_QUOTES, 'UTF-8');
             $titulo = htmlspecialchars($row["titulo"], ENT_QUOTES, 'UTF-8');
             $descripcion = htmlspecialchars($row["descripcion"], ENT_QUOTES, 'UTF-8');

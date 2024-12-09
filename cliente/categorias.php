@@ -137,7 +137,7 @@
 
           if ($resultCategorias->num_rows > 0) {
             while ($row = $resultCategorias->fetch_assoc()) {
-              $imagenRuta = htmlspecialchars($row['imagen'], ENT_QUOTES, 'UTF-8');
+              $imagenRuta = '../libros/' . $row['imagen'];
               $idCategoria = htmlspecialchars($row["id_categoria"], ENT_QUOTES, 'UTF-8');
               $Categoria = htmlspecialchars($row["categoria"], ENT_QUOTES, 'UTF-8');
 

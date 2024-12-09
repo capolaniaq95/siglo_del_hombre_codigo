@@ -66,13 +66,34 @@
 
                     $nombre = ($_POST['nombre']);
 
-
-
                     if (empty($nombre)) {
                         echo "<div class='alert alert-danger'>Todos los campos son obligatorios.</div>";
                     } else {
 
-                        $sql = "UPDATE autor SET nombre='$nombre' WHERE id_autor='$id_autor'";
+                    $match_correo = '/\d/';
+                    if (preg_match($match_correo, $nombre)) {
+                        echo "<script> alert('Nombre agregado con caracteres incorrectos, no pueden usarse numeros, ni caracteres especiales.');window.location='agregar.autor.php' </script>";
+                        exit();
+                        }
+    
+                    $imagen = $_FILES['imagen'];
+                    $directorio = __DIR__ . '../images/';
+                        
+                    $rutaImagen = $directorio . basename($imagen['name']);
+                            
+                    if (file_exists($rutaImagen)) {
+                            echo "<script> alert('Imagen ya existe debe renombrarla');window.location='login.php' </script>";
+                    } else {
+                        if (move_uploaded_file($imagen['tmp_name'], $rutaImagen)) {
+                            echo "<div class='alert alert-success'>Imagen subida correctamente.</div>";
+                        } else {
+                            echo "<div class='alert alert-danger'> problema al cargar imagen.</div>";
+                        }
+                    }
+
+                    $imagen = 'images/' . basename($imagen['name']);
+
+                        $sql = "UPDATE autor SET nombre='$nombre', imagen='$imagen' WHERE id_autor='$id_autor'";
                         if ($mysqli->query($sql) === TRUE) {
                             echo "<div class='alert alert-success'>Autor actualizado correctamente.</div>";
                             echo "<a href='autor.php' class='btn btn-primary'>Volver a la lista de autor</a>";
@@ -85,12 +106,15 @@
                 }
                 ?>
 
-                <form action="" method="post">
+                <form action="" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="nombre">Nombre</label>
                         <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $autor['nombre']; ?>" required>
                     </div>
-
+                    <div class="form-group">
+                        <label for="imagen">Imagen</label>
+                        <input type="file" class="form-control" id="imagen" name="imagen" required>
+                    </div>
                     <button type="submit" class="btn btn-info">Actualizar autor</button>
                 </form>
                 <a href="autor.php" class="btn btn-secondary mt-3">Cancelar</a>

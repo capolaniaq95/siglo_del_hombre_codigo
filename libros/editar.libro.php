@@ -13,22 +13,36 @@ if (!$autor_resultado) {
     exit();
 }
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_libro = $_POST["id_libro"];
     $categoria = $_POST["categoria"];
     $autor = $_POST["autor"];
     $titulo = $_POST["titulo"];
     $descripcion = $_POST["descripcion"];
-    $fecha_publicacion = $_POST["fecha_publicacion"];
     $editorial = $_POST["editorial"];
     $precio = $_POST["precio"];
-    $imagen = $_POST["imagen"];
+
+    $imagen = $_FILES['imagen'];
+    $directorio = __DIR__ . '../images/';
+
+    $rutaImagen = $directorio . basename($imagen['name']);
+    if (file_exists($rutaImagen)) {
+            echo "<script> alert('Imagen ya existe debe renombrarla');window.location='login.php' </script>";
+    } else {
+        if (move_uploaded_file($imagen['tmp_name'], $rutaImagen)) {
+            echo "<div class='alert alert-success'>Imagen subida correctamente.</div>";
+        } else {
+            echo "<div class='alert alert-danger'> problema al cargar imagen.</div>";
+        }
+    }
+
+    $imagen = 'images/' . basename($imagen['name']);
 
     $sql = "UPDATE libro 
             SET id_categoria='$categoria', id_autor='$autor', titulo='$titulo', descripcion='$descripcion', 
             editorial='$editorial', precio='$precio', imagen='$imagen' 
             WHERE id_libro='$id_libro'";
+
     if ($mysqli->query($sql) === TRUE) {
         echo '<script>alert("Libro actualizado exitosamente.");</script>';
         echo '<script>window.location.href = "libro.php";</script>';
@@ -139,7 +153,7 @@ if (isset($_GET["id"])) {
                         </div>
                         <div class="form-group">
                             <label for="imagen">Imagen</label>
-                            <input type="text" class="form-control-file" id="imagen" name="imagen" value="<?php echo $libro['imagen']; ?>" required>
+                            <input type="file" class="form-control-file" id="imagen" name="imagen" value="<?php echo $libro['imagen']; ?>" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     </form>

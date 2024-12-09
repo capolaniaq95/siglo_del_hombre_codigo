@@ -66,13 +66,33 @@
 
                     $categoria = ($_POST['categoria']);
 
+                    $match_correo = '/\d/';
+                    if (preg_match($match_correo, $categoria)) {
+                        echo "<script> alert('Categoria agregada con caracteres incorrectos, no pueden usarse numeros, ni caracteres especiales.');window.location='agregar.categoria.php' </script>";
+                        exit();
+                    }
 
+                    $imagen = $_FILES['imagen'];
+                    $directorio = __DIR__ . '../images/';
+
+                    $rutaImagen = $directorio . basename($imagen['name']);
+
+                    if (file_exists($rutaImagen)) {
+                        echo "<script> alert('Imagen ya existe debe renombrarla');window.location='login.php' </script>";
+                    } else {
+                        if (move_uploaded_file($imagen['tmp_name'], $rutaImagen)) {
+                            echo "<div class='alert alert-success'>Imagen subida correctamente.</div>";
+                        } else {
+                            echo "<div class='alert alert-danger'> problema al cargar imagen.</div>";
+                        }
+                    }
+                    $imagen = 'images/' . basename($imagen['name']);
 
                     if (empty($categoria)) {
                         echo "<div class='alert alert-danger'>Todos los campos son obligatorios.</div>";
                     } else {
 
-                        $sql = "UPDATE categoria SET categoria='$categoria' WHERE id_categoria='$id_categoria'";
+                        $sql = "UPDATE categoria SET categoria='$categoria', imagen='$imagen' WHERE id_categoria='$id_categoria'";
                         if ($mysqli->query($sql) === TRUE) {
                             echo "<div class='alert alert-success'>categoria actualizado correctamente.</div>";
                             echo "<a href='categoria.php' class='btn btn-primary'>Volver a la lista de categoria</a>";
@@ -85,12 +105,15 @@
                 }
                 ?>
 
-                <form action="" method="post">
+                <form action="" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="nombre">Categoria</label>
                         <input type="text" class="form-control" id="nombre" name="categoria" value="<?php echo $categoria['categoria']; ?>" required>
                     </div>
-
+                    <div class="form-group">
+                        <label for="imagen">Imagen</label>
+                        <input type="file" class="form-control" id="imagen" name="imagen" required>
+                    </div>
                     <button type="submit" class="btn btn-info">Actualizar categoria</button>
                 </form>
                 <a href="categoria.php" class="btn btn-secondary mt-3">Cancelar</a>
