@@ -275,7 +275,6 @@
             echo '</div>';
             echo '</div>';
             echo '</div>';
-            var_dump($imagenRuta);
           }
           } else {
 

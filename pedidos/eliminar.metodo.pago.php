@@ -101,7 +101,7 @@
                     $sql = "DELETE FROM metodo_de_pago WHERE id_metodo_de_pago='$id_metodo'";
                     if ($mysqli->query($sql) === TRUE) {
                         echo "<div class='alert alert-info'>metodo eliminado correctamente.</div>";
-                        echo "<a href='metodo.pago.php' class='btn btn-primary'>Volver a la lista de metodoes</a>";
+                        echo "<a href='metodo.pago.php' class='btn btn-primary'>Volver a la lista de metodos</a>";
                     } else {
                         echo "<div class='alert alert-danger'>Error al eliminar el metodo: " . $mysqli->error . "</div>";
                     }
