@@ -33,7 +33,7 @@
               <a class="nav-link text-white" href="mis.pedidos.php">Mis Pedidos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white" href="devolucion.php">Mis Devoluciones</a>
+              <a class="nav-link text-white" href="mis.devolucion.php">Mis Devoluciones</a>
             </li>
             <?php
             if ($_SESSION["id_tipo"] == 1): ?>
@@ -150,5 +150,38 @@
             }
             ?>
 </body>
+
+<footer class="bg-light text-center text-lg-start mt-4">
+    <div class="container-fluid p-4 bg-dark" style="background-color: #6c757d;">
+      <div class="row">
+        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+          <h5 class="text-uppercase text-white">Contenido del Pie de Página</h5>
+          <p class="text-white">Aquí puedes usar filas y columnas para organizar el contenido del pie de página. Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase text-white">images/cienaños</h5>
+          <ul class="list-unstyled mb-0">
+            <li><a href="#!" class="text-white">Enlace 1</a></li>
+            <li><a href="#!" class="text-white">Enlace 2</a></li>
+            <li><a href="#!" class="text-white">Enlace 3</a></li>
+            <li><a href="#!" class="text-white">Enlace 4</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase text-white">Enlaces</h5>
+          <ul class="list-unstyled mb-0">
+            <li><a href="#!" class="text-white">Enlace 1</a></li>
+            <li><a href="#!" class="text-white">Enlace 2</a></li>
+            <li><a href="#!" class="text-white">Enlace 3</a></li>
+            <li><a href="#!" class="text-white">Enlace 4</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="text-center p-3 text-white bg-dark" style="max-height: 3rem;">
+      © 2023 Copyright:
+      <a class="text-white" href="#">Siglo del Hombre</a>
+    </div>
+  </footer>
 
 </html>

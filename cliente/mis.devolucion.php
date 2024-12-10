@@ -94,7 +94,9 @@
                             INNER JOIN
                               pedido ON devolucion.id_pedido = pedido.id_pedido
                             WHERE
-                              pedido.id_usuario=$id_usuario";
+                              pedido.id_usuario=$id_usuario
+                            ORDER BY devolucion.id_devolucion
+                            DESC";
 
           $result = $mysqli->query($sql);
 

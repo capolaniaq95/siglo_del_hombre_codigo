@@ -39,23 +39,28 @@
 
 <body>
     <div class="d-flex flex-column min-vh-100">
-        <header>
+    <header>
             <nav class="navbar navbar-expand-lg navbar-primary bg-info">
                 <div class="container-fluid">
+                    <!-- Alinea el título a la izquierda -->
                     <a class="navbar-brand px-2 text-white" href="../index.administrador.php">Siglo del Hombre</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <!-- Alinea los elementos del menú a la izquierda utilizando "mr-auto" -->
                         <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="../pedidos/pedido.php">Pedidos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="../pedidos/metodo.pago.php">Metodo de Pago</a>
+                            </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link text-white dropdown-toggle" href="devolucion.php" id="navbarDropdown" role="button">
+                                <a class="nav-link text-white dropdown-toggle" href="../devolucion/devolucion.php" id="navbarDropdown" role="button">
                                     Devoluciones
                                 </a>
                                 <div class="dropdown-menu-custom" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="/devolucion/proceso.php">Proceso</a>
-                                    <a class="dropdown-item" href="/devolucion/aceptada.php">Aceptada</a>
-                                    <a class="dropdown-item" href="/devolucion/rechazada.php">Rechazada</a>
+                                    <a class="dropdown-item" href="proceso.php">Proceso</a>
+                                    <a class="dropdown-item" href="aceptada.php">Aceptada</a>
+                                    <a class="dropdown-item" href="rechazada.php">Rechazada</a>
                                 </div>
                             </li>
                         </ul>
@@ -85,7 +90,7 @@
                             $sql = "UPDATE devolucion SET devolucion.estado = 'Rechazada' WHERE id_devolucion=$id_devolucion";
 
                             if ($mysqli->query($sql) === TRUE) {
-                                echo "<div class='alert alert-success'>Devolucion Rechazada agregado correctamente.</div>";
+                                echo "<div class='alert alert-success'>Devolucion Rechazada correctamente.</div>";
                                 echo "<a href='/devolucion/devolucion.php' class='btn btn-primary'>Volver a la lista de devoluciones</a>";
                                 $mysqli->close();
                                 exit;
