@@ -123,7 +123,7 @@
 
                         $result = $mysqli->query($insert_linea_devolucion);
                     }
-                    echo "<div class='alert alert-success'>Pedido agregado correctamente.</div>";
+                    echo "<div class='alert alert-success'>Devolucion agregada correctamente.</div>";
                     echo "<a href='../index.php' class='btn btn-primary'>Volver al menu principal</a>";
                     $mysqli->close();
                     exit;
