@@ -74,7 +74,7 @@
 
 
     <main class="flex-fill">
-      <div class="container mt-4">
+      <div class="container mt-4 p-5">
         <h2>Mis Pedidos</h2>
         <div>
           <?php
@@ -88,7 +88,8 @@
                             INNER JOIN usuario ON pedido.id_usuario=usuario.id_usuario
                             INNER JOIN metodo_de_pago ON pedido.id_metodo_de_pago=metodo_de_pago.id_metodo_de_pago
                             WHERE pedido.id_usuario=$id_usuario
-                            ORDER BY pedido.fecha";
+                            ORDER BY pedido.fecha
+                            DESC";
 
           $result = $mysqli->query($sql);
 

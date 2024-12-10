@@ -69,7 +69,7 @@
     </div>
   </nav>
 </header>
-        <main class="flex-fill">
+        <main class="flex-fill p-2">
             <div class="container mt-4">
                 <h2>Consultar pedido</h2>
                 <?php
