@@ -46,7 +46,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
                             <li class="nav-item dropdown">
-                                <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button">
+                                <a class="nav-link text-white dropdown-toggle" href="inventario.php" id="navbarDropdown" role="button">
                                     Inventario
                                 </a>
                                 <div class="dropdown-menu-custom" aria-labelledby="navbarDropdown">
