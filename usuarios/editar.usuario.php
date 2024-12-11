@@ -46,12 +46,34 @@ require "../conexion.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_usuario = $_POST["id_usuario"];
     $correo = $_POST["correo"];
+
+    $match_correo = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
+    if (!preg_match($match_correo, $correo)) {
+        echo "<script> alert('Correo electrónico incorrecto.');window.location='editar.usuario.php?id=$id_usuario' </script>";
+        exit();
+    }
+
+
     $direccion = $_POST["direccion"];
     $celular = $_POST["celular"];
+
+    $match_celular = '/^3\d{9}$/';
+    if (!preg_match($match_celular, $celular)) {
+        echo "<script> alert('Número de celular incorrecto. Debe comenzar con 3 y tener 10 dígitos.');window.location='editar.usuario.php?id=$id_usuario' </script>";
+        exit();
+    }
+
+
     $nombre = $_POST["nombre"];
+
+    $match_correo = '/\d/';
+    if (preg_match($match_correo, $nombre)) {
+        echo "<script> alert('Nombre agregado con caracteres incorrectos, no pueden usarse numeros ni caracteres especiales.');window.location='editar.usuario.php?id=$id_usuario' </script>";
+        exit();
+    }
+
     $tipo = $_POST["tipo"];
 
-    
 
     $sql = "UPDATE usuario SET correo='$correo', direccion='$direccion', celular='$celular', nombre='$nombre', id_tipo='$tipo' WHERE id_usuario='$id_usuario'";
     if ($mysqli->query($sql) === TRUE) {
