@@ -61,6 +61,16 @@
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+                
+                $sql = "SELECT COUNT(id_linea_de_pedido) AS lineas FROM linea_de_pedido WHERE id_libro=$id_libro";
+                $result = $mysqli->query($sql);
+                $lineas = $result->fetch_assoc();
+
+                if ($lineas > 0){
+                    echo "<script> alert('Este libro no se puede eliminar');window.location='libro.php' </script>";
+
+                }
+
                 $sql = "DELETE FROM libro WHERE id_libro='$id_libro'";
                 if ($mysqli->query($sql) === TRUE) {
                     echo "<div class='alert alert-info'>libro eliminado correctamente.</div>";

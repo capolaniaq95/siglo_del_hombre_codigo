@@ -37,7 +37,17 @@
             if (isset($_GET['id'])) {
                 $id_usuario = intval($_GET['id']);
 
+
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+                    $sql = "SELECT COUNT(id_pedido) AS pedidos FROM pedido WHERE id_usuario=$id_usuario";
+                    $result = $mysqli->query($sql);
+                    $pedidos = $result->fetch_assoc();
+
+                    if ($pedidos > 0){
+                        echo "<script> alert('Usuario no se puede eliminar porque tiene documentos relacionados');window.location='usuario.php' </script>";
+
+                    }
                     $sql = "DELETE FROM usuario WHERE id_usuario='$id_usuario'";
                     if ($mysqli->query($sql) === TRUE) {
                         echo "<div class='alert alert-success'>usuario eliminado correctamente.</div>";

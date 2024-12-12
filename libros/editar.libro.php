@@ -56,6 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $libro = null;
 if (isset($_GET["id"])) {
     $id_libro = $_GET["id"];
+
+
     $libro_resultado = $mysqli->query("SELECT * FROM libro WHERE id_libro='$id_libro'");
     if ($libro_resultado) {
         $libro = $libro_resultado->fetch_assoc();
